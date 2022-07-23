@@ -31,7 +31,8 @@ fn update(_app: &App, _model: &mut Model, _update: Update) {}
 fn view(app: &App, _model: &Model, frame: Frame) {
     let draw = app.draw();
 
-    let mouse = vec2(app.mouse.x, app.mouse.y);
+    let mut mouse = vec2(app.mouse.x, app.mouse.y);
+    mouse *= 0.5;
 
     draw.background().color(rgb(0.2, 0.4, 0.6));
 
