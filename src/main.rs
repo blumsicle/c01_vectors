@@ -1,3 +1,5 @@
+use std::ops::Mul;
+
 use nannou::prelude::*;
 
 fn main() {
@@ -31,18 +33,10 @@ fn update(_app: &App, _model: &mut Model, _update: Update) {}
 fn view(app: &App, _model: &Model, frame: Frame) {
     let draw = app.draw();
 
-    let mouse = vec2(app.mouse.x, app.mouse.y);
-    let mouse_length = mouse.length();
+    let mut mouse = vec2(app.mouse.x, app.mouse.y);
+    mouse = mouse.normalize_or_zero().mul(100.0);
 
     draw.background().color(rgb(0.2, 0.4, 0.6));
-
-    let bounds = app.window_rect();
-    let rect = Rect::from_w_h(mouse_length, 10.0).top_left_of(bounds);
-
-    draw.rect()
-        .color(rgb(0.2, 0.6, 0.4))
-        .xy(rect.xy())
-        .wh(rect.wh());
 
     draw.line()
         .color(rgb(0.2, 0.6, 0.4))
