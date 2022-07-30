@@ -23,7 +23,7 @@ impl Mover {
 
     fn update(&mut self) {
         self.velocity += self.acceleration;
-        self.velocity.clamp_length_max(self.topspeed);
+        self.velocity = self.velocity.clamp_length_max(self.topspeed);
         self.location += self.velocity;
     }
 
