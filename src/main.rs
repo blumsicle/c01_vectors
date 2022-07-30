@@ -1,51 +1,7 @@
 use nannou::prelude::*;
 
-struct Mover {
-    location: Vec2,
-    velocity: Vec2,
-    topspeed: f32,
-    color: Hsv,
-}
-
-impl Mover {
-    fn new(location: Vec2, color: Hsv) -> Self {
-        Self {
-            location,
-            velocity: Vec2::ZERO,
-            topspeed: 10.0,
-            color,
-        }
-    }
-
-    fn update(&mut self) {
-        let acceleration = (random::<Vec2>() - 0.5).normalize_or_zero();
-        let acceleration = acceleration * random_range(0.0, 2.0);
-        self.velocity += acceleration;
-        self.velocity = self.velocity.clamp_length_max(self.topspeed);
-        self.location += self.velocity;
-    }
-
-    fn draw(&self, draw: &Draw) {
-        draw.ellipse()
-            .color(self.color)
-            .radius(8.0)
-            .xy(self.location);
-    }
-
-    fn check_edges(&mut self, bounds: &Rect) {
-        if self.location.x < bounds.left() {
-            self.location.x = bounds.right();
-        } else if self.location.x > bounds.right() {
-            self.location.x = bounds.left();
-        }
-
-        if self.location.y < bounds.bottom() {
-            self.location.y = bounds.top();
-        } else if self.location.y > bounds.top() {
-            self.location.y = bounds.bottom();
-        }
-    }
-}
+mod mover;
+use mover::Mover;
 
 struct Model {
     movers: Vec<Mover>,
@@ -75,9 +31,10 @@ fn model(app: &App) -> Model {
 
 fn update(app: &App, model: &mut Model, _update: Update) {
     let bounds = app.window_rect();
+    let mouse = vec2(app.mouse.x, app.mouse.y);
 
     for mover in &mut model.movers {
-        mover.update();
+        mover.update(&mouse);
         mover.check_edges(&bounds);
     }
 }
