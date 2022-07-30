@@ -1,5 +1,3 @@
-use std::ops::{Mul, Sub};
-
 use nannou::prelude::*;
 
 struct Mover {
@@ -21,7 +19,7 @@ impl Mover {
 
     fn update(&mut self) {
         let acceleration = (random::<Vec2>() - 0.5).normalize_or_zero();
-        let acceleration = acceleration.mul(random_range(0.0, 2.0));
+        let acceleration = acceleration * random_range(0.0, 2.0);
         self.velocity += acceleration;
         self.velocity = self.velocity.clamp_length_max(self.topspeed);
         self.location += self.velocity;
@@ -66,7 +64,7 @@ fn model(app: &App) -> Model {
     let mut movers = Vec::<Mover>::new();
 
     for _ in 0..10 {
-        let location = random::<Vec2>().sub(0.5).mul(bounds.wh());
+        let location = (random::<Vec2>() - 0.5) * bounds.wh();
         let color = hsv(random_f32(), 0.5, 0.7);
 
         movers.push(Mover::new(location, color));
