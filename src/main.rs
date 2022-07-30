@@ -5,11 +5,25 @@ use nannou::prelude::*;
 struct Mover {
     location: Vec2,
     velocity: Vec2,
+    acceleration: Vec2,
+    topspeed: f32,
     color: Hsv,
 }
 
 impl Mover {
+    fn new(location: Vec2, color: Hsv) -> Self {
+        Self {
+            location,
+            velocity: Vec2::ZERO,
+            acceleration: vec2(-0.001, -0.01),
+            topspeed: 10.0,
+            color,
+        }
+    }
+
     fn update(&mut self) {
+        self.velocity += self.acceleration;
+        self.velocity.clamp_length_max(self.topspeed);
         self.location += self.velocity;
     }
 
@@ -53,14 +67,9 @@ fn model(app: &App) -> Model {
 
     for _ in 0..10 {
         let location = random::<Vec2>().sub(0.5).mul(bounds.wh());
-        let velocity = random::<Vec2>().sub(0.5).mul(10.0);
         let color = hsv(random_f32(), 0.5, 0.7);
 
-        movers.push(Mover {
-            location,
-            velocity,
-            color,
-        })
+        movers.push(Mover::new(location, color));
     }
 
     Model { movers }
